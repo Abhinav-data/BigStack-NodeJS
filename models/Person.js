@@ -10,8 +10,7 @@ const PersonSchema = new Schema({
     required: true
   },
   username: {
-    type: String,
-    required: true
+    type: String
   },
   password: {
     type: String,
@@ -24,7 +23,7 @@ const PersonSchema = new Schema({
   },
   date: {
     type: Date,
-    required: Date.now
+    default: Date.now
   }
 });
 
