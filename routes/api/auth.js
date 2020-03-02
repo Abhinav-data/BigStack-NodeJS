@@ -50,7 +50,23 @@ router.post("/login", (req, res) => {
         .compare(password, person.password)
         .then(isCorrect => {
           if (isCorrect) {
-            res.json({ success: "User Logged in" });
+            // res.json({ success: "User Logged in" });
+            const payload = {
+              id: person.id,
+              name: person.name,
+              email: person.email
+            };
+            jsonwt.sign(
+              payload,
+              key.secret,
+              { expiresIn: 3600 },
+              (err, token) => {
+                res.json({
+                  success: true,
+                  token: "Bearer" + token
+                });
+              }
+            );
           } else {
             res.status(400).json({ passworderror: "Password is not connect" });
           }
