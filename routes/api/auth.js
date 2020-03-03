@@ -63,7 +63,7 @@ router.post("/login", (req, res) => {
               (err, token) => {
                 res.json({
                   success: true,
-                  token: "Bearer" + token
+                  token: "Bearer " + token
                 });
               }
             );
@@ -75,5 +75,18 @@ router.post("/login", (req, res) => {
     })
     .catch(err => console.log(err));
 });
+
+router.get(
+  "/profile",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    res.json({
+      id: req.user.id,
+      name: req.user.name,
+      email: req.user.email,
+      profilepic: req.user.profilepic
+    });
+  }
+);
 
 module.exports = router;

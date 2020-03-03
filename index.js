@@ -6,6 +6,7 @@ const db = require("./setup/myurl").mongoURL;
 const auth = require("./routes/api/auth");
 const profile = require("./routes/api/profile");
 const questions = require("./routes/api/questions");
+const passport = require("passport");
 
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
@@ -19,6 +20,10 @@ mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Database connected successfully"))
   .catch(err => console.log(err));
+
+// Middleware for JWT stratergy
+app.use(passport.initialize());
+require("./stratergies/jsonwtStratergy")(passport);
 
 app.get("/", (req, res) => {
   res.send("BigStack");
