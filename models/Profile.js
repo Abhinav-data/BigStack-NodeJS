@@ -34,12 +34,10 @@ const ProfileSchema = Schema({
         type: String
       },
       from: {
-        type: Date,
-        required: true
+        type: Date
       },
       to: {
-        type: Date,
-        required: true
+        type: Date
       },
       current: {
         type: Boolean,

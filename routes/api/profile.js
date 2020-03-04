@@ -77,4 +77,69 @@ router.post(
   }
 );
 
+router.get("/:username", (req, res) => {
+  Profile.findOne({ username: req.params.username })
+    .populate("user", ["name", "profilepic"])
+    .then(profile => {
+      if (!profile) {
+        res.status(404).json({ usernotfound: "User not found" });
+      }
+      res.json(profile);
+    })
+    .catch(err => console.log("Error in fetching username" + err));
+});
+
+router.get("/find/everyone", (req, res) => {
+  Profile.find()
+    .populate("user", ["name", "profilepic"])
+    .then(profiles => {
+      if (!profiles) {
+        res.status(404).json({ usernotfound: "No profile found" });
+      }
+      res.json(profiles);
+    })
+    .catch(err => console.log("Error in fetching username" + err));
+});
+
+router.delete(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Profile.findOneAndRemove({ user: req.user.id })
+      .then(() => {
+        Person.findOneAndRemove({ _id: req.user.id })
+          .then(() => {
+            res.json({ success: "User removed" });
+          })
+          .catch(err => console.log(err));
+      })
+      .catch(err => console.log("Error while removing" + err));
+  }
+);
+
+router.post(
+  "/workrole",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Profile.findOne({ user: req.user.id })
+      .then(profile => {
+        const newWork = {
+          role: req.body.role,
+          company: req.body.company,
+          country: req.body.country,
+          from: req.body.from,
+          to: req.body.to,
+          current: req.body.current,
+          details: req.body.details
+        };
+        profile.workrole.unshift(newWork);
+        profile
+          .save()
+          .then(profile => res.json(profile))
+          .catch(err => console.log(err));
+      })
+      .catch(err => console.log(err));
+  }
+);
+
 module.exports = router;
